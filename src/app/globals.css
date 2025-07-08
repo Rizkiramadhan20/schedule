@@ -1,8 +1,17 @@
 @import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../../.flowbite-react/class-list.json";
 
 :root {
-  --background: #ffffff;
+  --background: #f8fafc;
   --foreground: #171717;
+  --primary: #2563eb; /* biru modern */
+  --secondary: #7c3aed; /* ungu */
+  --accent: #06b6d4; /* cyan */
+  --success: #22c55e; /* hijau */
+  --warning: #facc15; /* kuning */
+  --danger: #ef4444; /* merah */
+  --info: #0ea5e9; /* biru muda */
 }
 
 @theme inline {
@@ -10,12 +19,27 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --card-border: 1px solid var(--secondary);
+}
+
+.card {
+  border: var(--card-border);
+  border-radius: 1rem;
+  background: var(--background);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --primary: #60a5fa; /* biru terang */
+    --secondary: #c4b5fd; /* ungu terang */
+    --accent: #67e8f9; /* cyan terang */
+    --success: #4ade80; /* hijau terang */
+    --warning: #fde68a; /* kuning terang */
+    --danger: #f87171; /* merah terang */
+    --info: #38bdf8; /* biru muda terang */
   }
 }
 
@@ -23,4 +47,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+html {
+  font-size: 80%;
+  scroll-behavior: smooth;
 }
