@@ -1,0 +1,96 @@
+import {
+  LayoutDashboard,
+  Settings,
+  BriefcaseBusiness,
+  FileText,
+  LogOut,
+  CalendarDays,
+  ClipboardList,
+  Search,
+  Mail,
+  User2,
+} from "lucide-react";
+
+export type SidebarNavSubItem = {
+  title: string;
+  href: string;
+};
+
+export type SidebarNavItem = {
+  title: string;
+  href: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  subItems?: SidebarNavSubItem[];
+};
+
+export const sidebarNavItems: SidebarNavItem[] = [
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Proyek",
+    href: "/dashboard/proyek",
+    icon: FileText,
+    subItems: [
+      { title: "Proyek", href: "/dashboard/proyek/proyek" },
+      { title: "Category", href: "/dashboard/proyek/category" },
+      { title: "Framework", href: "/dashboard/proyek/framework" },
+    ],
+  },
+  {
+    title: "Manajemen Proyek",
+    href: "/dashboard/manajemen-proyek",
+    icon: FileText,
+    subItems: [
+      { title: "Pending", href: "/dashboard/manajemen-proyek/pending" },
+      { title: "On Progress", href: "/dashboard/manajemen-proyek/progress" },
+      { title: "Revisi", href: "/dashboard/manajemen-proyek/revisi" },
+      { title: "Selesai", href: "/dashboard/manajemen-proyek/selesai" },
+    ],
+  },
+  {
+    title: "Jadwal & Timeline",
+    href: "/dashboard/timeline",
+    icon: CalendarDays,
+  },
+  {
+    title: "Detail Proyek",
+    href: "/dashboard/detail-proyek",
+    icon: ClipboardList,
+  },
+  {
+    title: "Pencarian & Filter",
+    href: "/dashboard/filter",
+    icon: Search,
+  },
+  {
+    title: "Statistik",
+    href: "/dashboard/statistik",
+    icon: BriefcaseBusiness,
+  },
+  {
+    title: "Kontak Masuk",
+    href: "/dashboard/kontak",
+    icon: Mail,
+  },
+];
+
+export const generalNavItems: SidebarNavItem[] = [
+  {
+    title: "User",
+    href: "/dashboard/user",
+    icon: User2,
+  },
+  {
+    title: "Pengaturan",
+    href: "/dashboard/settings",
+    icon: Settings,
+  },
+  {
+    title: "Logout",
+    href: "/logout",
+    icon: LogOut,
+  },
+];

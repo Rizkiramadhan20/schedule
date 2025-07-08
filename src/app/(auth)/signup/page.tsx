@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 
-import { Button, Label, TextInput } from 'flowbite-react';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 import Link from 'next/link';
 import { useAuth } from '@/utils/context/AuthContext';
@@ -49,50 +51,50 @@ export default function RegisterPage() {
                         <span className="font-bold text-xl text-[var(--primary)]">Sellora</span>
                     </div>
                     <h2 className="text-2xl font-bold mb-2 text-[var(--foreground)]">Create an Account</h2>
-                    <p className="text-[var(--secondary)] mb-6">Join now to streamline your experience from day one.</p>
+                    <p className="mb-6">Join now to streamline your experience from day one.</p>
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                         {error && (
                             <div className="text-red-500 text-sm mb-2">{error}</div>
                         )}
                         <div className='flex flex-col gap-2'>
                             <Label htmlFor="name" className="text-[var(--foreground)]">Name</Label>
-                            <TextInput
+                            <Input
                                 id="name"
                                 type="text"
                                 placeholder="Roger Gerard"
                                 value={name}
-                                onChange={e => setName(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                                 required
                                 className="bg-[var(--background)] text-[var(--foreground)]"
                             />
                         </div>
                         <div className='flex flex-col gap-2'>
                             <Label htmlFor="email" className="text-[var(--foreground)]">Email</Label>
-                            <TextInput
+                            <Input
                                 id="email"
                                 type="email"
                                 placeholder="sellora@company.com"
                                 value={email}
-                                onChange={e => setEmail(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                                 required
                                 className="bg-[var(--background)] text-[var(--foreground)]"
                             />
                         </div>
                         <Label htmlFor="password" className="text-[var(--foreground)]">Password</Label>
                         <div className="relative">
-                            <TextInput
+                            <Input
                                 id="password"
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder="••••••••"
                                 value={password}
-                                onChange={e => setPassword(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                                 required
                                 className="bg-[var(--background)] text-[var(--foreground)] pr-12 focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)]"
                             />
                             <button
                                 type="button"
                                 tabIndex={-1}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-[var(--secondary)] hover:text-[var(--primary)] cursor-pointer bg-transparent"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer bg-transparent"
                                 onClick={() => setShowPassword((v) => !v)}
                                 aria-label={showPassword ? 'Hide password' : 'Show password'}
                             >
@@ -111,19 +113,19 @@ export default function RegisterPage() {
                         </div>
                         <Label htmlFor="confirmPassword" className="text-[var(--foreground)]">Confirm Password</Label>
                         <div className="relative">
-                            <TextInput
+                            <Input
                                 id="confirmPassword"
                                 type={showConfirmPassword ? 'text' : 'password'}
                                 placeholder="••••••••"
                                 value={confirmPassword}
-                                onChange={e => setConfirmPassword(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                                 required
                                 className="bg-[var(--background)] text-[var(--foreground)] pr-12 focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)]"
                             />
                             <button
                                 type="button"
                                 tabIndex={-1}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-[var(--secondary)] hover:text-[var(--primary)] cursor-pointer bg-transparent"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer bg-transparent"
                                 onClick={() => setShowConfirmPassword((v) => !v)}
                                 aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                             >
@@ -140,20 +142,16 @@ export default function RegisterPage() {
                                 )}
                             </button>
                         </div>
-                        <Button type="submit" color="primary" disabled={loading} className="w-full bg-[var(--primary)] text-white hover:bg-[var(--primary)]/90">
+                        <Button type="submit" disabled={loading} className="w-full bg-[var(--primary)] mb-4 hover:bg-[var(--primary)]/90">
                             {loading ? 'Registering...' : 'Register'}
                         </Button>
                     </form>
-                    <div className="flex items-center my-4">
-                        <div className="flex-grow h-px bg-[var(--secondary)]" />
-                        <span className="mx-2 text-[var(--secondary)] text-xs">or</span>
-                        <div className="flex-grow h-px bg-[var(--secondary)]" />
-                    </div>
-                    <p className="text-center text-sm text-[var(--secondary)]">
+
+                    <p className="text-center text-sm">
                         Already have an account?{' '}
                         <Link href="/signin" className="text-[var(--primary)] hover:underline">Sign In</Link>
                     </p>
-                    <div className="mt-8 text-xs text-[var(--secondary)] flex justify-between">
+                    <div className="mt-8 text-xs flex justify-between">
                         <span>Copyright © 2023 Sellora Enterprises LTD.</span>
                         <Link href="#" className="hover:underline text-[var(--primary)]">Privacy Policy</Link>
                     </div>
@@ -169,24 +167,24 @@ export default function RegisterPage() {
                             <rect x="220" y="300" width="120" height="60" rx="30" fill="var(--warning)" fillOpacity="0.10" />
                         </svg>
                     </div>
-                    <div className="text-white max-w-xs mx-auto text-center z-10">
-                        <h3 className="text-xl font-bold mb-4">Effortlessly manage your team and operations.</h3>
-                        <p className="mb-8 text-sm">Log in to access your CRM dashboard and manage your team.</p>
+                    <div className=" max-w-xs mx-auto text-center z-10">
+                        <h3 className="text-xl font-bold mb-4 text-white">Effortlessly manage your team and operations.</h3>
+                        <p className="mb-8 text-sm text-white">Log in to access your CRM dashboard and manage your team.</p>
                         <div className="rounded-xl overflow-hidden shadow-lg bg-white/10 p-4">
                             {/* Dummy dashboard illustration */}
                             <div className="bg-white rounded-lg p-4 text-[var(--foreground)] text-xs">
                                 <div className="flex gap-2 mb-2">
                                     <div className="w-1/2">
                                         <div className="font-bold text-lg">$18,274</div>
-                                        <div className="text-[var(--secondary)]">Revenue</div>
+                                        <div>Revenue</div>
                                     </div>
                                     <div className="w-1/2">
                                         <div className="font-bold text-lg">98.4%</div>
-                                        <div className="text-[var(--secondary)]">Growth</div>
+                                        <div>Growth</div>
                                     </div>
                                 </div>
                                 <div className="h-16 bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] rounded mb-2" />
-                                <div className="flex justify-between text-[var(--secondary)]">
+                                <div className="flex justify-between">
                                     <span>Team</span>
                                     <span>Operations</span>
                                     <span>Sales</span>

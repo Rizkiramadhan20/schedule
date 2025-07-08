@@ -2,7 +2,10 @@
 
 import React, { useState } from 'react';
 
-import { Button, Checkbox, Label, TextInput } from 'flowbite-react';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 import Link from 'next/link';
 
@@ -32,40 +35,40 @@ export default function SignInPage() {
                 {/* Left: Form */}
                 <div className="md:w-1/2 w-full flex flex-col justify-center p-8 md:p-12">
                     <div className="mb-8 flex items-center gap-2">
-                        <span className="font-bold text-xl text-[var(--primary)]">Sellora</span>
+                        <span className="font-bold text-xl ">Schdule With Rizki Ramadhan</span>
                     </div>
-                    <h2 className="text-2xl font-bold mb-2 text-[var(--foreground)]">Welcome Back</h2>
-                    <p className="text-[var(--secondary)] mb-6">Enter your email and password to access your account.</p>
+                    <h2 className="text-2xl font-bold mb-2 ">Welcome Back</h2>
+                    <p className=" mb-6">Enter your email and password to access your account.</p>
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                         <div className='flex flex-col gap-2'>
-                            <Label htmlFor="email" className="text-[var(--foreground)]">Email</Label>
-                            <TextInput
+                            <Label htmlFor="email" className="">Email</Label>
+                            <Input
                                 id="email"
                                 type="email"
                                 placeholder="sellora@company.com"
                                 value={email}
-                                onChange={e => setEmail(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                                 required
                                 autoFocus
-                                className="bg-[var(--background)] text-[var(--foreground)]"
+                                className="bg-[var(--background)] "
                             />
                         </div>
                         <div className='flex flex-col gap-2'>
-                            <Label htmlFor="password" className="text-[var(--foreground)]">Password</Label>
+                            <Label htmlFor="password" className="">Password</Label>
                             <div className="relative">
-                                <TextInput
+                                <Input
                                     id="password"
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="••••••••"
                                     value={password}
-                                    onChange={e => setPassword(e.target.value)}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                                     required
-                                    className="bg-[var(--background)] text-[var(--foreground)] pr-12 focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)]"
+                                    className="bg-[var(--background)]  pr-12 focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)]"
                                 />
                                 <button
                                     type="button"
                                     tabIndex={-1}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-[var(--secondary)] hover:text-[var(--primary)] cursor-pointer bg-transparent"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)]  hover: cursor-pointer bg-transparent"
                                     onClick={() => setShowPassword((v) => !v)}
                                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                                 >
@@ -84,10 +87,10 @@ export default function SignInPage() {
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Checkbox id="remember" checked={remember} onChange={e => setRemember(e.target.checked)} />
-                            <Label htmlFor="remember" className="text-[var(--foreground)]">Remember Me</Label>
+                            <Checkbox id="remember" checked={remember} onCheckedChange={(checked: boolean) => setRemember(checked)} />
+                            <Label htmlFor="remember" className="">Remember Me</Label>
                         </div>
-                        <Button type="submit" color="primary" disabled={loading} className="w-full bg-[var(--primary)] text-white hover:bg-[var(--primary)]/90">
+                        <Button type="submit" disabled={loading} className="w-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 mb-2">
                             {loading && (
                                 <svg className="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
@@ -97,43 +100,36 @@ export default function SignInPage() {
                             Log In
                         </Button>
                     </form>
-                    <div className="flex items-center my-4">
-                        <div className="flex-grow h-px bg-[var(--secondary)]" />
-                        <span className="mx-2 text-[var(--secondary)] text-xs">or</span>
-                        <div className="flex-grow h-px bg-[var(--secondary)]" />
-                    </div>
-                    <div className="flex gap-2 mb-4">
-                        {/* Removed Google and Apple login buttons */}
-                    </div>
-                    <p className="text-center text-sm text-[var(--secondary)]">
+
+                    <p className="text-center text-sm">
                         Don&apos;t Have an Account?{' '}
-                        <Link href="/signup" className="text-[var(--primary)] hover:underline">Register Now</Link>
+                        <Link href="/signup" className=" hover:underline">Register Now</Link>
                     </p>
-                    <div className="mt-8 text-xs text-[var(--secondary)] flex justify-between">
+                    <div className="mt-8 text-xs  flex justify-between">
                         <span>Copyright © 2023 Sellora Enterprises LTD.</span>
-                        <Link href="#" className="hover:underline text-[var(--primary)]">Privacy Policy</Link>
+                        <Link href="#" className="hover:underline ">Privacy Policy</Link>
                     </div>
                 </div>
                 {/* Right: Illustration/Info */}
                 <div className="hidden md:flex md:w-1/2 bg-[var(--primary)] items-center justify-center p-8 relative">
-                    <div className="text-white max-w-xs mx-auto text-center">
-                        <h3 className="text-xl font-bold mb-4">Effortlessly manage your team and operations.</h3>
-                        <p className="mb-8 text-sm">Log in to access your CRM dashboard and manage your team.</p>
-                        <div className="rounded-xl overflow-hidden shadow-lg bg-white/10 p-4">
+                    <div className="text-[var(--card-foreground)] max-w-xs mx-auto text-center">
+                        <h3 className="text-xl font-bold mb-4 text-white">Effortlessly manage your team and operations.</h3>
+                        <p className="mb-8 text-sm text-white">Log in to access your CRM dashboard and manage your team.</p>
+                        <div className="rounded-xl overflow-hidden shadow-lg bg-[var(--card)]/10 p-4">
                             {/* Dummy dashboard illustration */}
-                            <div className="bg-white rounded-lg p-4 text-[var(--foreground)] text-xs">
+                            <div className="bg-[var(--card)] rounded-lg p-4  text-xs">
                                 <div className="flex gap-2 mb-2">
                                     <div className="w-1/2">
                                         <div className="font-bold text-lg">$16,274</div>
-                                        <div className="text-[var(--secondary)]">Revenue</div>
+                                        <div className="">Revenue</div>
                                     </div>
                                     <div className="w-1/2">
                                         <div className="font-bold text-lg">92.4%</div>
-                                        <div className="text-[var(--secondary)]">Growth</div>
+                                        <div className="">Growth</div>
                                     </div>
                                 </div>
                                 <div className="h-16 bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] rounded mb-2" />
-                                <div className="flex justify-between text-[var(--secondary)]">
+                                <div className="flex justify-between ">
                                     <span>Team</span>
                                     <span>Operations</span>
                                     <span>Sales</span>

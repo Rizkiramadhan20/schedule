@@ -4,11 +4,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 
-import { ThemeProvider } from './components/ThemeProvider';
-
 import Providers from "@/base/routing/Provider";
 
 import Pathname from "@/base/routing/Pathname";
+
+import { ThemeProvider } from "@/utils/context/ThemaContext"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,17 +32,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <ThemeProvider />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          <Pathname>
-            {children}
-          </Pathname>
-        </Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          disableTransitionOnChange
+          storageKey="theme"
+        >
+          <Providers>
+            <Pathname>
+              {children}
+            </Pathname>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
