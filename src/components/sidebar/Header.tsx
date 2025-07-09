@@ -1,8 +1,11 @@
 "use client"
 
 import { Bell, Menu } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,11 +14,17 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
 import { Switch } from "@/components/ui/switch"
+
 import { useTheme } from "next-themes"
+
 import { motion } from "framer-motion"
+
 import { useEffect, useState, createContext, useContext } from "react"
+
 import { useAuth } from "@/utils/context/AuthContext"
+
 import { useRouter } from "next/navigation"
 
 // Create context for sidebar state

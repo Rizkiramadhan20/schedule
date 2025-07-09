@@ -25,7 +25,7 @@ export default function DashboardLayout({
             <div className="flex h-screen bg-background">
                 {/* Sidebar */}
                 <aside className="md:relative">
-                    <div className="h-full overflow-hidden">
+                    <div className="h-full overflow-x-visible">
                         <Sidebar />
                     </div>
                 </aside>

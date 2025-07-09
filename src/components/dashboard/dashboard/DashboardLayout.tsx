@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ChartAreaInteractive } from "@/components/dashboard/dashboard/ChartAreaInteractive"
 
 const stats = [
     { label: "Total Order", value: 120, change: "+11%" },
@@ -55,6 +56,8 @@ export default function DashboardLayout() {
                     </Card>
                 ))}
             </div>
+
+            <ChartAreaInteractive />
 
             {/* Grafik Order Bulanan & Target */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

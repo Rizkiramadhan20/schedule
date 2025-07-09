@@ -1,13 +1,10 @@
 import {
   LayoutDashboard,
-  Settings,
   BriefcaseBusiness,
   FileText,
   LogOut,
   CalendarDays,
-  ClipboardList,
   Search,
-  Mail,
   User2,
 } from "lucide-react";
 
@@ -56,11 +53,6 @@ export const sidebarNavItems: SidebarNavItem[] = [
     icon: CalendarDays,
   },
   {
-    title: "Detail Proyek",
-    href: "/dashboard/detail-proyek",
-    icon: ClipboardList,
-  },
-  {
     title: "Pencarian & Filter",
     href: "/dashboard/filter",
     icon: Search,
@@ -70,23 +62,13 @@ export const sidebarNavItems: SidebarNavItem[] = [
     href: "/dashboard/statistik",
     icon: BriefcaseBusiness,
   },
-  {
-    title: "Kontak Masuk",
-    href: "/dashboard/kontak",
-    icon: Mail,
-  },
 ];
 
 export const generalNavItems: SidebarNavItem[] = [
   {
-    title: "User",
-    href: "/dashboard/user",
+    title: "Profile",
+    href: "/dashboard/profile",
     icon: User2,
-  },
-  {
-    title: "Pengaturan",
-    href: "/dashboard/settings",
-    icon: Settings,
   },
   {
     title: "Logout",

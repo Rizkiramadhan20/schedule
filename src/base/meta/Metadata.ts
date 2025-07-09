@@ -9,24 +9,24 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: "AniHuaVerse: Satu Versi, Semua Dunia",
+  title: "Schedule Jasa Pembuatan Website Profesional",
   description:
-    "Selamat datang di AniHuaVerse, gerbang ke dunia hiburan Asia yang tak terbatas. Satu tempat untuk menyelami kisah-kisah terbaik dari Jepang, Tiongkok, dan Korea – semua bersatu dalam satu semesta hiburan.",
+    "Jadwalkan layanan pembuatan website profesional dengan mudah dan cepat. Solusi terbaik untuk kebutuhan website bisnis, portofolio, toko online, dan lainnya.",
 
   authors: [{ name: "Rizki Ramadhan" }],
 
   keywords: [
-    "Anime",
+    "Jasa Pembuatan Website",
+    "Pembuatan Website Profesional",
+    "Jasa Web Developer",
+    "Website Bisnis",
+    "Website Portofolio",
+    "Toko Online",
+    "Landing Page",
+    "Web Design",
+    "Web Development",
+    "Jadwal Konsultasi Website",
     "Rizki Ramadhan",
-    "Anime Terbaru",
-    "donghua",
-    "manga",
-    "drakor",
-    "Anime Terpopuler",
-    "Anime Terlengkap",
-    "Anime Terbaik",
-    "Streaming Anime",
-    "Anime Subtitle Indonesia",
   ],
 
   icons: {
@@ -44,8 +44,8 @@ export const metadata = {
 
   tags: [
     {
-      name: "AniHuaVerse: Satu Versi, Semua Dunia",
-      content: "Streaming",
+      name: "Schedule Jasa Pembuatan Website Profesional",
+      content: "Jasa Pembuatan Website, Konsultasi, Jadwal",
     },
   ],
 
@@ -64,27 +64,27 @@ export const metadata = {
 
   openGraph: {
     type: "website",
-    title: "AniHuaVerse: Satu Versi, Semua Dunia",
+    title: "Schedule Jasa Pembuatan Website Profesional",
     description:
-      "Selamat datang di AniHuaVerse, gerbang ke dunia hiburan Asia yang tak terbatas. Satu tempat untuk menyelami kisah-kisah terbaik dari Jepang, Tiongkok, dan Korea – semua bersatu dalam satu semesta hiburan.",
+      "Jadwalkan layanan pembuatan website profesional dengan mudah dan cepat. Solusi terbaik untuk kebutuhan website bisnis, portofolio, toko online, dan lainnya.",
     url: BASE_URL,
-    siteName: "AniHuaVerse: Satu Versi, Semua Dunia",
+    siteName: "Schedule Jasa Pembuatan Website Profesional",
     locale: "id_ID",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "AniHuaVerse: Satu Versi, Semua Dunia",
+        alt: "Schedule Jasa Pembuatan Website Profesional",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "AniHuaVerse: Satu Versi, Semua Dunia",
+    title: "Schedule Jasa Pembuatan Website Profesional",
     description:
-      "Selamat datang di AniHuaVerse, gerbang ke dunia hiburan Asia yang tak terbatas. Satu tempat untuk menyelami kisah-kisah terbaik dari Jepang, Tiongkok, dan Korea – semua bersatu dalam satu semesta hiburan.",
+      "Jadwalkan layanan pembuatan website profesional dengan mudah dan cepat. Solusi terbaik untuk kebutuhan website bisnis, portofolio, toko online, dan lainnya.",
     creator: "@rizki_ramadhan",
     site: "@rizki_ramadhan",
     images: ["/og-image.jpg"],
