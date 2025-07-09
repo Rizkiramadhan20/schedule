@@ -2,7 +2,6 @@ import {
   LayoutDashboard,
   BriefcaseBusiness,
   FileText,
-  LogOut,
   CalendarDays,
   Search,
   User2,
@@ -69,10 +68,5 @@ export const generalNavItems: SidebarNavItem[] = [
     title: "Profile",
     href: "/dashboard/profile",
     icon: User2,
-  },
-  {
-    title: "Logout",
-    href: "/logout",
-    icon: LogOut,
   },
 ];

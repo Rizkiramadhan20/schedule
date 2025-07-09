@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { Toaster } from "react-hot-toast";
+import { Toaster } from 'sonner'
 
 const Pathname = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -14,18 +14,6 @@ const Pathname = ({ children }: { children: React.ReactNode }) => {
                     style: {
                         background: '#333',
                         color: '#fff',
-                    },
-                    success: {
-                        style: {
-                            background: '#22c55e',
-                            color: '#fff',
-                        },
-                    },
-                    error: {
-                        style: {
-                            background: '#ef4444',
-                            color: '#fff',
-                        },
                     },
                 }}
             />
