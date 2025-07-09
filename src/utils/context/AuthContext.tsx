@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 import { useRouter } from 'next/navigation';
 
-import { Role, UserAccount, AuthContextType } from '@/types/Auth';
+import { UserAccount, AuthContextType } from '@/types/Auth';
 
 import { auth, db } from '@/utils/firebase/firebase';
 
@@ -12,10 +12,9 @@ import {
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    createUserWithEmailAndPassword,
 } from 'firebase/auth';
 
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 import { toast } from 'react-hot-toast';
 
@@ -155,43 +154,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return `Selamat datang, ${displayName}!`;
     };
 
-    const signUp = async (email: string, password: string, displayName: string): Promise<void> => {
-        try {
-            if (!process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS) {
-                throw new Error('Collection path is not configured');
-            }
-
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-            const userData: UserAccount = {
-                uid: userCredential.user.uid,
-                email: email,
-                displayName: displayName,
-                role: Role.USER,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                isActive: true,
-            };
-
-            const userDocRef = doc(db, process.env.NEXT_PUBLIC_COLLECTIONS_ACCOUNTS, userCredential.user.uid);
-            await setDoc(userDocRef, userData);
-
-            toast.success('Registration successful!');
-            router.push('/dashboard'); // Redirect ke dashboard setelah sign up
-        } catch (error) {
-            if (error instanceof Error) {
-                if (error.message.includes('auth/email-already-in-use')) {
-                    toast.error('Email already in use. Please use a different email.');
-                } else {
-                    toast.error('Registration failed: ' + error.message);
-                }
-            } else {
-                toast.error('Registration failed');
-            }
-            throw error;
-        }
-    };
-
     const forgotPassword = async (email: string): Promise<void> => {
         try {
             // Send OTP for password reset
@@ -251,7 +213,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         deleteAccount,
         hasRole,
         getDashboardUrl,
-        signUp,
         forgotPassword,
         showInactiveModal,
         setShowInactiveModal,

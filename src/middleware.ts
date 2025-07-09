@@ -5,15 +5,13 @@ import type { NextRequest } from "next/server";
 // List of public paths that don't require authentication
 const publicPaths = [
   "/signin",
-  "/signup",
-  "/forgot-password",
   "/sitemap.xml",
   "/robots.txt",
   "/manifest.json",
 ];
 
 // List of auth pages that should redirect authenticated users
-const authPages = ["/signin", "/signup"];
+const authPages = ["/signin"];
 
 // Removed requireEmailVerification and all related logic
 

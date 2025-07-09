@@ -21,11 +21,6 @@ export interface AuthContextType {
   deleteAccount: () => Promise<void>;
   hasRole: (roles: string | string[]) => boolean;
   getDashboardUrl: (userRole: string) => string;
-  signUp: (
-    email: string,
-    password: string,
-    displayName: string
-  ) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   showInactiveModal: boolean;
   setShowInactiveModal: (show: boolean) => void;

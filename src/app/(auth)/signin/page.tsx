@@ -103,7 +103,6 @@ export default function SignInPage() {
 
                     <p className="text-center text-sm text-[var(--muted-foreground)]">
                         Don&apos;t Have an Account?{' '}
-                        <Link href="/signup" className="hover:underline text-[var(--primary)]">Register Now</Link>
                     </p>
                     <div className="mt-8 text-xs flex justify-between text-[var(--muted-foreground)]">
                         <span>Copyright © 2023 Sellora Enterprises LTD.</span>
