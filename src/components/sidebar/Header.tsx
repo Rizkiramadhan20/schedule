@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, Menu } from "lucide-react"
+import { Bell, Menu, PanelLeftIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -27,6 +27,10 @@ import { useAuth } from "@/utils/context/AuthContext"
 
 import { useRouter } from "next/navigation"
 
+import { useSidebarCollapsed } from "./SidebarCollapsedContext"
+
+import { cn } from "@/lib/utils"
+
 // Create context for sidebar state
 type SidebarContextType = {
     isMobileOpen: boolean
@@ -46,6 +50,7 @@ export default function Header() {
     const { user, logout } = useAuth()
     const router = useRouter()
     const { isMobileOpen, setIsMobileOpen } = useSidebar()
+    const { collapsed, setCollapsed } = useSidebarCollapsed()
 
     useEffect(() => {
         setMounted(true)
@@ -61,7 +66,7 @@ export default function Header() {
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container flex h-14 items-center justify-between px-4">
+            <div className="flex h-14 items-center justify-between px-4">
                 <Button
                     variant="ghost"
                     size="icon"
@@ -70,6 +75,17 @@ export default function Header() {
                 >
                     <Menu className="h-6 w-6" />
                 </Button>
+                {/* Collapse/Expand Button (Desktop only) */}
+                <div className="hidden lg:flex items-center">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setCollapsed((c) => !c)}
+                        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                    >
+                        <PanelLeftIcon className={cn("h-5 w-5 transition-transform", collapsed ? "rotate-180" : "")} />
+                    </Button>
+                </div>
                 <div className="flex flex-1 items-center justify-end space-x-2 lg:space-x-4">
                     <div className="flex items-center space-x-2 lg:space-x-4">
                         {mounted && (

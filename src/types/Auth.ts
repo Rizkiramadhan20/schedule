@@ -7,7 +7,7 @@ export interface UserAccount {
   email: string;
   displayName: string;
   role: Role;
-  photoURL?: string;
+  photo_url?: string;
   updatedAt: Date;
   createdAt: Date;
   isActive: boolean;

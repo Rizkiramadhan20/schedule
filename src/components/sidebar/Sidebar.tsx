@@ -12,18 +12,19 @@ import { Button } from "@/components/ui/button"
 
 import { useSidebar } from "./Header"
 
+import { useSidebarCollapsed } from "./SidebarCollapsedContext"
+
 import { sidebarNavItems, generalNavItems } from "@/components/sidebar/data/dashboard"
 
 import {
     X,
     ChevronDown,
-    PanelLeftIcon,
 } from "lucide-react";
 
 export default function Sidebar() {
     const pathname = usePathname()
     const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({})
-    const [collapsed, setCollapsed] = useState(false)
+    const { collapsed } = useSidebarCollapsed()
     const { isMobileOpen, setIsMobileOpen } = useSidebar()
 
     const toggleExpand = (href: string) => {
@@ -46,39 +47,10 @@ export default function Sidebar() {
                 "transform transition-transform duration-300 ease-in-out",
                 isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
             )}>
-                {/* Collapse/Expand Button (Desktop only) */}
-                <div className="hidden lg:flex items-center justify-end mb-2">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className=""
-                        onClick={() => setCollapsed((c) => !c)}
-                        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-                    >
-                        <PanelLeftIcon className={cn("h-5 w-5 transition-transform", collapsed ? "rotate-180" : "")} />
-                    </Button>
-                </div>
                 <div className={cn(
-                    "flex h-[60px] items-center justify-between border-b border-border/40 px-0 pb-6",
+                    "flex items-center justify-between border-b border-border/40 px-0",
                     collapsed && "justify-center"
                 )}>
-                    <Link
-                        href="/"
-                        className={cn(
-                            "flex items-center gap-2 font-semibold hover:opacity-80 transition-opacity",
-                            collapsed ? "justify-center w-full px-0" : "justify-start w-full px-0"
-                        )}
-                    >
-                        <div className="h-6 w-6 bg-primary rounded-md" />
-                        {!collapsed && (
-                            <span className={cn(
-                                "text-xl whitespace-nowrap transition-all duration-300",
-                                "w-auto opacity-100 block"
-                            )}>
-                                Rizki Ramadhan
-                            </span>
-                        )}
-                    </Link>
                     {!collapsed && (
                         <Button
                             variant="ghost"
@@ -95,7 +67,7 @@ export default function Sidebar() {
                         <div>
                             {!collapsed && (
                                 <h3 className={cn(
-                                    "text-xs font-semibold text-muted-foreground uppercase mb-3",
+                                    "text-xs font-semibold text-muted-foreground uppercase mb-6",
                                     "block tracking-wider"
                                 )}>
                                     MENU
@@ -204,7 +176,7 @@ export default function Sidebar() {
                         <div>
                             {!collapsed && (
                                 <h3 className={cn(
-                                    "text-xs font-semibold text-muted-foreground uppercase mb-3",
+                                    "text-xs font-semibold text-muted-foreground uppercase mb-6",
                                     "block tracking-wider"
                                 )}>
                                     GENERAL
@@ -250,6 +222,29 @@ export default function Sidebar() {
                             </div>
                         </div>
                     </div>
+                </div>
+                {/* Profile section moved to bottom */}
+                <div className={cn(
+                    "flex items-center border-t border-border/40 pt-6 mt-6",
+                    collapsed ? "justify-center" : "justify-start"
+                )}>
+                    <Link
+                        href="/"
+                        className={cn(
+                            "flex items-center gap-2 font-semibold hover:opacity-80 transition-opacity",
+                            collapsed ? "justify-center w-full px-0" : "justify-start w-full px-0"
+                        )}
+                    >
+                        <div className="h-6 w-6 bg-primary rounded-md" />
+                        {!collapsed && (
+                            <span className={cn(
+                                "text-xl whitespace-nowrap transition-all duration-300",
+                                "w-auto opacity-100 block"
+                            )}>
+                                Rizki Ramadhan
+                            </span>
+                        )}
+                    </Link>
                 </div>
             </div>
             {/* Overlay for mobile */}
