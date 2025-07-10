@@ -14,9 +14,14 @@ export interface depositList {
     price: number;
     percent: number;
 }
-
 export interface frameworkList {
     name: string;
+}
+
+export interface accountsList {
+    label: string;
+    email: string;
+    password: string;
 }
 
 export interface Proyek {
@@ -31,8 +36,7 @@ export interface Proyek {
     thumbnail: string;
     framework: string[];
     nama_user: string;
-    user_email: string;
-    password_email: string;
+    accounts: accountsList[];
     price: number;
     deposit: depositList[];
     link: Link[];

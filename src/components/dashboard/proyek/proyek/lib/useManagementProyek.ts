@@ -14,8 +14,8 @@ import {
 } from "firebase/firestore";
 import { toast } from "sonner";
 import { Proyek } from "@/types/Proyek";
-import useManagementCategory from '../../proyek/category/lib/useManagementCategory';
-import useManagementFramework from '../../proyek/framework/lib/useManagementFramework';
+import useManagementCategory from '../../category/lib/useManagementCategory';
+import useManagementFramework from '../../framework/lib/useManagementFramework';
 
 const defaultForm: Omit<Proyek, 'id' | 'createdAt' | 'updatedAt'> = {
     title: '',
@@ -28,15 +28,13 @@ const defaultForm: Omit<Proyek, 'id' | 'createdAt' | 'updatedAt'> = {
     thumbnail: '',
     framework: [], // array of id framework
     nama_user: '',
-    user_email: '',
-    password_email: '',
+    accounts: [],
     price: 0,
     deposit: [],
     link: [],
 };
 
 export default function useManagementProyek() {
-    // State untuk dialog dan form
     const [open, setOpen] = useState(false);
     const [form, setForm] = useState<Omit<Proyek, 'id' | 'createdAt' | 'updatedAt'>>(defaultForm);
     const [editOpen, setEditOpen] = useState(false);
@@ -47,21 +45,49 @@ export default function useManagementProyek() {
     const [proyeks, setProyeks] = useState<Proyek[]>([]);
     const [imageFile, setImageFile] = useState<File | null>(null);
 
+    // Filter state
+    const [selectedCategory, setSelectedCategory] = useState<string>('all');
+    const [selectedProgress, setSelectedProgress] = useState<string>('all');
+    const [selectedStatus, setSelectedStatus] = useState<string>('all');
+    const [searchTitle, setSearchTitle] = useState<string>('');
+
     // Fetch categories and frameworks
     const { categories, loading: loadingCategories } = useManagementCategory();
     const { Framework: frameworks, loading: loadingFrameworks } = useManagementFramework();
 
+    // Filter projects based on selected filters and search
+    const filteredProyeks = proyeks.filter(proyek => {
+        const categoryMatch = selectedCategory === 'all' || proyek.category === selectedCategory;
+        const progressMatch = selectedProgress === 'all' || proyek.progres === selectedProgress;
+        const statusMatch = selectedStatus === 'all' || proyek.status === selectedStatus;
+        const titleMatch = searchTitle === '' ||
+            proyek.title.toLowerCase().includes(searchTitle.toLowerCase());
+
+        return categoryMatch && progressMatch && statusMatch && titleMatch;
+    });
+
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
-    const totalPages = Math.ceil(proyeks.length / itemsPerPage);
-    const paginatedProyeks = proyeks.slice(
+    const itemsPerPage = 4;
+    const totalPages = Math.ceil(filteredProyeks.length / itemsPerPage);
+    const paginatedProyeks = filteredProyeks.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
+
+
+
+    // Reset to first page when filter changes
     useEffect(() => {
-        if (currentPage > totalPages) setCurrentPage(1);
-    }, [proyeks, totalPages, currentPage]);
+        setCurrentPage(1);
+    }, [selectedCategory, selectedProgress, selectedStatus, searchTitle]);
+
+    // Reset to first page when current page exceeds total pages
+    useEffect(() => {
+        if (totalPages > 0 && currentPage > totalPages) {
+            setCurrentPage(1);
+        }
+    }, [totalPages, currentPage]);
 
     // Listen to proyek collection
     useEffect(() => {
@@ -321,8 +347,41 @@ export default function useManagementProyek() {
         }));
     };
 
+    // Handler untuk menambah account
+    const addAccount = () => {
+        setForm(f => ({
+            ...f,
+            accounts: [
+                ...(f.accounts || []),
+                {
+                    label: '',
+                    email: '',
+                    password: '',
+                }
+            ]
+        }));
+    };
+
+    // Handler untuk update account
+    const updateAccount = (idx: number, field: 'label' | 'email' | 'password', value: string) => {
+        setForm(f => {
+            const newAccounts = [...(f.accounts || [])];
+            newAccounts[idx] = { ...newAccounts[idx], [field]: value };
+            return { ...f, accounts: newAccounts };
+        });
+    };
+
+    // Handler untuk hapus account
+    const removeAccount = (idx: number) => {
+        setForm(f => ({
+            ...f,
+            accounts: (f.accounts || []).filter((_, i) => i !== idx)
+        }));
+    };
+
     return {
         proyeks,
+        filteredProyeks,
         loading,
         open,
         setOpen,
@@ -351,6 +410,9 @@ export default function useManagementProyek() {
         addDeposit,
         updateDeposit,
         removeDeposit,
+        addAccount,
+        updateAccount,
+        removeAccount,
         // categories/frameworks
         categories,
         loadingCategories,
@@ -362,5 +424,14 @@ export default function useManagementProyek() {
         itemsPerPage,
         totalPages,
         paginatedProyeks,
+        // filter
+        selectedCategory,
+        setSelectedCategory,
+        selectedProgress,
+        setSelectedProgress,
+        selectedStatus,
+        setSelectedStatus,
+        searchTitle,
+        setSearchTitle,
     };
 } 

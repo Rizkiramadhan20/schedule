@@ -13,7 +13,17 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 
-import useManagementProyek from './useManagementProyek'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
+import { Input } from "@/components/ui/input"
+
+import useManagementProyek from './lib/useManagementProyek'
 
 import ModalForm from './modal/ModalForm';
 
@@ -27,32 +37,21 @@ import { Proyek } from '@/types/Proyek';
 
 import { FormatIndoDate } from '@/lib/formatDate';
 
-
 import { Card, CardHeader, CardTitle, CardAction, CardContent } from '@/components/ui/card';
 
 import { EmptyDataSVG } from "@/base/helper/Empety"
 
-// SVG ICONS
-const StatusIcon = ({ status }: { status: string }) => (
-    status === 'published' ? (
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" /></svg>
-    ) : status === 'draft' ? (
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M8 12h8" /></svg>
-    ) : (
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
-    )
-);
-const ProgressIcon = ({ progres }: { progres: string }) => (
-    progres === 'pending' ? (
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
-    ) : progres === 'progress' ? (
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9" /></svg>
-    ) : progres === 'revisi' ? (
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
-    ) : (
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" /></svg>
-    )
-);
+import { StatusIcon, ProgressIcon } from "@/base/helper/ProgresStatus"
+
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 
 export default function ProyekLayout() {
     const {
@@ -61,10 +60,21 @@ export default function ProyekLayout() {
         categories, frameworks, loadingCategories, loadingFrameworks,
         addLink, updateLink, removeLink,
         addDeposit, updateDeposit, removeDeposit,
-        proyeks, // gunakan semua data, bukan paginatedProyeks
+        addAccount, updateAccount, removeAccount,
+        filteredProyeks,
+        selectedCategory, setSelectedCategory,
+        selectedProgress, setSelectedProgress,
+        selectedStatus, setSelectedStatus,
+        searchTitle, setSearchTitle,
         handleEdit, editOpen, setEditOpen,
         deleteProyek,
-        setDeleteId // <-- add this
+        setDeleteId,
+        // pagination
+        currentPage,
+        setCurrentPage,
+        itemsPerPage,
+        totalPages,
+        paginatedProyeks,
     } = useManagementProyek();
 
     // State untuk modal view dan delete
@@ -132,6 +142,9 @@ export default function ProyekLayout() {
                     addDeposit={addDeposit}
                     updateDeposit={updateDeposit}
                     removeDeposit={removeDeposit}
+                    addAccount={addAccount}
+                    updateAccount={updateAccount}
+                    removeAccount={removeAccount}
                 />
                 {/* Modal Edit */}
                 {editOpen && (
@@ -153,19 +166,97 @@ export default function ProyekLayout() {
                         addDeposit={addDeposit}
                         updateDeposit={updateDeposit}
                         removeDeposit={removeDeposit}
+                        addAccount={addAccount}
+                        updateAccount={updateAccount}
+                        removeAccount={removeAccount}
                     />
                 )}
             </div>
+            {/* Filter Section */}
+            <div className="mt-6 mb-4 flex flex-col md:flex-row items-start gap-4 p-4 sm:p-8 border justify-between rounded-2xl border-border bg-card shadow-sm">
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full">
+                    <div className="flex gap-2 w-full">
+                        <Input
+                            id="search-title"
+                            type="text"
+                            placeholder="Search by project title..."
+                            value={searchTitle}
+                            onChange={(e) => setSearchTitle(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full">
+                        {/* Category Filter */}
+                        <div className="w-full">
+                            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Categories</SelectItem>
+                                    {categories.map((category) => (
+                                        <SelectItem key={category.id} value={category.name}>
+                                            {category.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* Progress Filter */}
+                        <div className="w-full">
+                            <Select value={selectedProgress} onValueChange={setSelectedProgress}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select progress" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Progress</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="progress">In Progress</SelectItem>
+                                    <SelectItem value="revisi">Revision</SelectItem>
+                                    <SelectItem value="selesai">Completed</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* Status Filter */}
+                        <div className="w-full">
+                            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Status</SelectItem>
+                                    <SelectItem value="draft">Draft</SelectItem>
+                                    <SelectItem value="published">Published</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Tampilkan pemberitahuan jika data kosong */}
-            {proyeks.length === 0 ? (
+            {filteredProyeks.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16">
                     <EmptyDataSVG />
-                    <p className="text-lg text-muted-foreground">Belum ada data proyek yang tersedia.</p>
+                    <p className="text-lg text-muted-foreground">
+                        {selectedCategory === 'all' && selectedProgress === 'all' && selectedStatus === 'all' && searchTitle === ''
+                            ? "Belum ada data proyek yang tersedia."
+                            : "Tidak ada proyek yang sesuai dengan filter yang dipilih."
+                        }
+                    </p>
+                    {(selectedCategory !== 'all' || selectedProgress !== 'all' || selectedStatus !== 'all' || searchTitle !== '') && (
+                        <p className="text-sm text-muted-foreground mt-2">
+                            Coba ubah filter atau kata kunci pencarian untuk melihat hasil yang berbeda.
+                        </p>
+                    )}
                 </div>
             ) : (
                 <div className="mt-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {proyeks.map((proyek) => (
+                        {paginatedProyeks.map((proyek) => (
                             <Card key={proyek.id} className="relative p-0 bg-gradient-to-br from-card via-background to-muted rounded-3xl border border-border transition-all duration-300 group flex flex-col overflow-hidden">
                                 <CardHeader className="p-0 relative">
                                     <div className="relative w-full aspect-[4/3] bg-muted flex items-center justify-center overflow-hidden rounded-t-3xl border-b border-border">
@@ -175,7 +266,7 @@ export default function ProyekLayout() {
                                             {proyek.status.charAt(0).toUpperCase() + proyek.status.slice(1)}
                                         </span>
                                         {/* Badge Progres */}
-                                        <span className={`absolute bottom-14 l  eft-22 px-3 py-1.5 inline-flex items-center text-xs leading-5 font-semibold rounded-full z-10 transition-colors duration-200 gap-1 shadow ${proyek.progres === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : proyek.progres === 'progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : proyek.progres === 'revisi' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}`} title={`Progres: ${proyek.progres}`}>
+                                        <span className={`absolute bottom-14 left-28 px-3 py-1.5 inline-flex items-center text-xs leading-5 font-semibold rounded-full z-10 transition-colors duration-200 gap-1 shadow ${proyek.progres === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : proyek.progres === 'progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : proyek.progres === 'revisi' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}`} title={`Progres: ${proyek.progres}`}>
                                             <ProgressIcon progres={proyek.progres} />
                                             {proyek.progres.charAt(0).toUpperCase() + proyek.progres.slice(1)}
                                         </span>
@@ -245,6 +336,117 @@ export default function ProyekLayout() {
                                 </CardAction>
                             </Card>
                         ))}
+                    </div>
+
+                    {/* Pagination */}
+                    <div className='flex flex-col md:flex-row justify-between items-center mt-8'>
+                        <div className="text-sm text-muted-foreground">
+                            {filteredProyeks.length} project{filteredProyeks.length !== 1 ? 's' : ''} found
+                            {totalPages > 1 && (
+                                <span className="ml-2">
+                                    (Page {currentPage} of {totalPages}, {itemsPerPage} per page)
+                                </span>
+                            )}
+                        </div>
+
+                        {totalPages > 1 && (
+                            <div>
+                                <Pagination>
+                                    <PaginationContent>
+                                        <PaginationItem>
+                                            <PaginationPrevious
+                                                href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    if (currentPage > 1) setCurrentPage(currentPage - 1);
+                                                }}
+                                                className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+                                            />
+                                        </PaginationItem>
+
+                                        {/* Show first page */}
+                                        {currentPage > 3 && (
+                                            <>
+                                                <PaginationItem>
+                                                    <PaginationLink
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setCurrentPage(1);
+                                                        }}
+                                                    >
+                                                        1
+                                                    </PaginationLink>
+                                                </PaginationItem>
+                                                {currentPage > 4 && (
+                                                    <PaginationItem>
+                                                        <PaginationEllipsis />
+                                                    </PaginationItem>
+                                                )}
+                                            </>
+                                        )}
+
+                                        {/* Show current page and surrounding pages */}
+                                        {(() => {
+                                            const pages = [];
+                                            const startPage = Math.max(1, currentPage - 1);
+                                            const endPage = Math.min(totalPages, currentPage + 1);
+
+                                            for (let page = startPage; page <= endPage; page++) {
+                                                pages.push(
+                                                    <PaginationItem key={page}>
+                                                        <PaginationLink
+                                                            href="#"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                setCurrentPage(page);
+                                                            }}
+                                                            isActive={page === currentPage}
+                                                        >
+                                                            {page}
+                                                        </PaginationLink>
+                                                    </PaginationItem>
+                                                );
+                                            }
+                                            return pages;
+                                        })()}
+
+                                        {/* Show last page */}
+                                        {currentPage < totalPages - 2 && (
+                                            <>
+                                                {currentPage < totalPages - 3 && (
+                                                    <PaginationItem>
+                                                        <PaginationEllipsis />
+                                                    </PaginationItem>
+                                                )}
+                                                <PaginationItem>
+                                                    <PaginationLink
+                                                        href="#"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setCurrentPage(totalPages);
+                                                        }}
+                                                    >
+                                                        {totalPages}
+                                                    </PaginationLink>
+                                                </PaginationItem>
+                                            </>
+                                        )}
+
+                                        <PaginationItem>
+                                            <PaginationNext
+                                                href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                                                }}
+                                                className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
+                                            />
+                                        </PaginationItem>
+                                    </PaginationContent>
+                                </Pagination>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

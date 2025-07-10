@@ -1,49 +1,120 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Progress } from "@/components/ui/progress";
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
 import { ChartAreaInteractive } from "@/components/dashboard/dashboard/ChartAreaInteractive"
 
-const stats = [
-    { label: "Total Order", value: 120, change: "+11%" },
-    { label: "Order Selesai", value: 90, change: "+9%" },
-    { label: "Order Proses", value: 30, change: "-2%" },
-    { label: "Revenue", value: "Rp 25jt", change: "+15%" },
-];
+import DashboardSkelaton from "@/components/dashboard/dashboard/DashboardSkelaton"
 
-const chartData = [
-    { month: 'Jan', order: 10 },
-    { month: 'Feb', order: 15 },
-    { month: 'Mar', order: 20 },
-    { month: 'Apr', order: 18 },
-    { month: 'Mei', order: 25 },
-    { month: 'Jun', order: 12 },
-    { month: 'Jul', order: 20 },
-    { month: 'Agu', order: 22 },
-    { month: 'Sep', order: 17 },
-    { month: 'Okt', order: 30 },
-    { month: 'Nov', order: 28 },
-    { month: 'Des', order: 35 },
-];
+import { db } from "@/utils/firebase/firebase";
 
-const target = 100; // Target order bulanan
-const achieved = 75; // Order tercapai bulan ini
+import { collection, onSnapshot, query, orderBy, Timestamp } from "firebase/firestore";
 
-const recentOrders = [
-    { name: "Website Toko Online", price: "Rp 3.500.000", status: "Selesai", date: "2024-06-01" },
-    { name: "Company Profile", price: "Rp 2.000.000", status: "Proses", date: "2024-06-03" },
-    { name: "Landing Page", price: "Rp 1.200.000", status: "Selesai", date: "2024-06-05" },
-    { name: "Web Sekolah", price: "Rp 4.000.000", status: "Proses", date: "2024-06-07" },
-    { name: "Web Portfolio", price: "Rp 1.000.000", status: "Selesai", date: "2024-06-10" },
-];
+import { Proyek } from "@/types/Proyek";
+
+import { FormatIndoDate } from "@/lib/formatDate";
 
 export default function DashboardLayout() {
+    const [proyeks, setProyeks] = useState<Proyek[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch projects data
+    useEffect(() => {
+        const q = query(
+            collection(db, process.env.NEXT_PUBLIC_COLLECTIONS_PROYEK as string),
+            orderBy("createdAt", "desc")
+        );
+        const unsub = onSnapshot(q, (snapshot) => {
+            setProyeks(
+                snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                })) as Proyek[]
+            );
+            setLoading(false);
+        });
+        return () => unsub();
+    }, []);
+
+    // Calculate statistics
+    const totalOrders = proyeks.length;
+    const completedOrders = proyeks.filter(p => p.progres === 'selesai').length;
+    const inProgressOrders = proyeks.filter(p => p.progres === 'progress').length;
+    const pendingOrders = proyeks.filter(p => p.progres === 'pending').length;
+    const totalRevenue = proyeks.reduce((sum, p) => sum + (p.price || 0), 0);
+
+    // Calculate monthly data for chart
+    const getMonthlyData = () => {
+        const monthlyData = Array.from({ length: 12 }, (_, i) => ({
+            month: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'][i],
+            order: 0
+        }));
+
+        const currentYear = new Date().getFullYear();
+        proyeks.forEach(proyek => {
+            const createdAt = proyek.createdAt instanceof Timestamp ?
+                proyek.createdAt.toDate() : new Date(proyek.createdAt);
+            if (createdAt.getFullYear() === currentYear) {
+                const month = createdAt.getMonth();
+                monthlyData[month].order += 1;
+            }
+        });
+
+        return monthlyData;
+    };
+
+    // Get recent orders for table
+    const getRecentOrders = () => {
+        return proyeks.slice(0, 5).map(proyek => ({
+            name: proyek.title,
+            price: `Rp ${proyek.price?.toLocaleString('id-ID') || '0'}`,
+            status: proyek.progres === 'selesai' ? 'Selesai' :
+                proyek.progres === 'progress' ? 'Proses' :
+                    proyek.progres === 'revisi' ? 'Revisi' : 'Pending',
+            start_date: FormatIndoDate(proyek.start_date),
+            end_date: FormatIndoDate(proyek.end_date),
+            date: FormatIndoDate(proyek.createdAt)
+        }));
+    };
+
+    // Calculate target and achieved
+    const target = 100; // Target order bulanan
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const achieved = proyeks.filter(proyek => {
+        const createdAt = proyek.createdAt instanceof Timestamp ?
+            proyek.createdAt.toDate() : new Date(proyek.createdAt);
+        return createdAt.getMonth() === currentMonth && createdAt.getFullYear() === currentYear;
+    }).length;
+
+    const stats = [
+        { label: "Total Order", value: totalOrders, change: "+11%" },
+        { label: "Order Selesai", value: completedOrders, change: "+9%" },
+        { label: "Order Proses", value: inProgressOrders, change: "-2%" },
+        { label: "Order Pending", value: pendingOrders, change: "+5%" },
+        { label: "Pendapatan", value: `Rp ${(totalRevenue / 1000000).toFixed(1)}jt`, change: "+15%" },
+    ];
+
+    const chartData = getMonthlyData();
+    const recentOrders = getRecentOrders();
+
+    if (loading) {
+        return <DashboardSkelaton />;
+    }
+
     return (
         <section className="space-y-8">
             {/* Statistik Ringkas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 {stats.map((stat) => (
                     <Card key={stat.label}>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -97,13 +168,15 @@ export default function DashboardLayout() {
                     <CardTitle>Order Terbaru</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="overflow-x-auto">
+                    <ScrollArea className="h-[200px]">
                         <Table>
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Nama Order</TableHead>
                                     <TableHead>Harga</TableHead>
                                     <TableHead>Status</TableHead>
+                                    <TableHead>Mulai</TableHead>
+                                    <TableHead>Selesai</TableHead>
                                     <TableHead>Tanggal</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -113,14 +186,20 @@ export default function DashboardLayout() {
                                         <TableCell>{order.name}</TableCell>
                                         <TableCell>{order.price}</TableCell>
                                         <TableCell>
-                                            <span className={`px-2 py-1 rounded text-xs font-medium ${order.status === 'Selesai' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{order.status}</span>
+                                            <span className={`px-2 py-1 rounded text-xs font-medium ${order.status === 'Selesai' ? 'bg-green-100 text-green-700' :
+                                                order.status === 'Proses' ? 'bg-yellow-100 text-yellow-700' :
+                                                    order.status === 'Revisi' ? 'bg-orange-100 text-orange-700' :
+                                                        'bg-gray-100 text-gray-700'
+                                                }`}>{order.status}</span>
                                         </TableCell>
+                                        <TableCell>{order.start_date}</TableCell>
+                                        <TableCell>{order.end_date}</TableCell>
                                         <TableCell>{order.date}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
-                    </div>
+                    </ScrollArea>
                 </CardContent>
             </Card>
         </section>

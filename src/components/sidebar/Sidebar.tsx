@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { usePathname } from "next/navigation"
 
@@ -21,17 +21,56 @@ import {
     ChevronDown,
 } from "lucide-react";
 
+import { SidebarNavItem, SidebarNavSubItem } from "@/components/sidebar/data/dashboard";
+
 export default function Sidebar() {
     const pathname = usePathname()
     const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({})
     const { collapsed } = useSidebarCollapsed()
     const { isMobileOpen, setIsMobileOpen } = useSidebar()
 
+    // Auto-expand parent items when subitems are active
+    useEffect(() => {
+        const newExpandedItems: Record<string, boolean> = {}
+
+        sidebarNavItems.forEach((item) => {
+            if (item.subItems) {
+                const hasActiveSubItem = item.subItems.some(subItem =>
+                    pathname === subItem.href || pathname.startsWith(subItem.href + '/')
+                )
+                if (hasActiveSubItem) {
+                    newExpandedItems[item.href] = true
+                }
+            }
+        })
+
+        setExpandedItems(prev => ({
+            ...prev,
+            ...newExpandedItems
+        }))
+    }, [pathname])
+
     const toggleExpand = (href: string) => {
         setExpandedItems(prev => ({
             ...prev,
             [href]: !prev[href]
         }))
+    }
+
+    // Check if item or any of its subitems are active
+    const isItemActive = (item: SidebarNavItem) => {
+        if (pathname === item.href) return true
+        if (item.subItems) {
+            return item.subItems.some((subItem: SidebarNavSubItem) =>
+                pathname === subItem.href || pathname.startsWith(subItem.href + '/')
+            )
+        }
+        return false
+    }
+
+    // Check if subitem is active
+    const isSubItemActive = (subItem: SidebarNavSubItem) => {
+        return pathname === subItem.href || pathname.startsWith(subItem.href + '/')
     }
 
     return (
@@ -78,10 +117,10 @@ export default function Sidebar() {
                                     <div key={item.href} className="space-y-1">
                                         <div className="relative group">
                                             <Button
-                                                variant={pathname === item.href ? "secondary" : "ghost"}
+                                                variant={isItemActive(item) ? "secondary" : "ghost"}
                                                 className={cn(
                                                     "w-full justify-start gap-2",
-                                                    pathname === item.href && "bg-primary/10 text-primary font-medium rounded-lg",
+                                                    isItemActive(item) && "bg-primary/10 text-primary font-medium rounded-lg",
                                                     "justify-start px-2 min-w-[40px] min-h-[40px]",
                                                     "hover:bg-muted/50 transition-colors duration-200",
                                                     "border border-transparent hover:border-border/40",
@@ -96,7 +135,7 @@ export default function Sidebar() {
                                                             <item.icon className={cn(
                                                                 "h-5 w-5",
                                                                 "transition-all duration-300",
-                                                                pathname === item.href ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                                                                isItemActive(item) ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                                                             )} />
                                                             {!collapsed && (
                                                                 <span className={cn(
@@ -122,7 +161,7 @@ export default function Sidebar() {
                                                         <item.icon className={cn(
                                                             "h-5 w-5",
                                                             "transition-all duration-300",
-                                                            pathname === item.href ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                                                            isItemActive(item) ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                                                         )} />
                                                         {!collapsed && (
                                                             <span className={cn(
@@ -145,10 +184,10 @@ export default function Sidebar() {
                                                 {item.subItems.map((subItem) => (
                                                     <div key={subItem.href} className="relative group">
                                                         <Button
-                                                            variant={pathname === subItem.href ? "secondary" : "ghost"}
+                                                            variant={isSubItemActive(subItem) ? "secondary" : "ghost"}
                                                             className={cn(
                                                                 "w-full justify-start gap-2",
-                                                                pathname === subItem.href && "bg-primary/10 text-primary font-medium rounded-lg",
+                                                                isSubItemActive(subItem) && "bg-primary/10 text-primary font-medium rounded-lg",
                                                                 "justify-start px-2 min-w-[40px] min-h-[40px]",
                                                                 "hover:bg-muted/50 transition-colors duration-200",
                                                                 "border border-transparent hover:border-border/40"
@@ -186,10 +225,10 @@ export default function Sidebar() {
                                 {generalNavItems.map((item) => (
                                     <div key={item.href} className="relative group">
                                         <Button
-                                            variant={pathname === item.href ? "secondary" : "ghost"}
+                                            variant={isItemActive(item) ? "secondary" : "ghost"}
                                             className={cn(
                                                 "w-full justify-start gap-2",
-                                                pathname === item.href && "bg-primary/10 text-primary font-medium rounded-lg",
+                                                isItemActive(item) && "bg-primary/10 text-primary font-medium rounded-lg",
                                                 "justify-start px-2 min-w-[40px] min-h-[40px]",
                                                 "hover:bg-muted/50 transition-colors duration-200",
                                                 "border border-transparent hover:border-border/40",
@@ -201,7 +240,7 @@ export default function Sidebar() {
                                                 <item.icon className={cn(
                                                     "h-5 w-5",
                                                     "transition-all duration-300",
-                                                    pathname === item.href ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                                                    isItemActive(item) ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
                                                 )} />
                                                 {!collapsed && (
                                                     <span className={cn(

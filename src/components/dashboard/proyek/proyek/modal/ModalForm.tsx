@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Label } from '@/components/ui/label';
 import { CalendarIcon } from 'lucide-react';
 import { Timestamp } from 'firebase/firestore';
-import { Check, ChevronsUpDown, Camera } from "lucide-react";
+import { Check, ChevronsUpDown, Camera, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
     Command,
@@ -217,6 +217,9 @@ interface ModalFormProps {
     addDeposit: () => void;
     updateDeposit: (idx: number, field: 'label' | 'price' | 'percent', value: string | number) => void;
     removeDeposit: (idx: number) => void;
+    addAccount: () => void;
+    updateAccount: (idx: number, field: 'label' | 'email' | 'password', value: string) => void;
+    removeAccount: (idx: number) => void;
 }
 
 export default function ModalForm({
@@ -236,7 +239,10 @@ export default function ModalForm({
     removeLink,
     addDeposit,
     updateDeposit,
-    removeDeposit
+    removeDeposit,
+    addAccount,
+    updateAccount,
+    removeAccount
 }: ModalFormProps) {
     // Handler for date change
     function handleDateChange(name: string, date: Date | null) {
@@ -335,7 +341,7 @@ export default function ModalForm({
                         />
                     </div>
 
-                    <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="nama_user" className="px-1">Nama User</Label>
                             <Input
@@ -347,30 +353,79 @@ export default function ModalForm({
                                 onChange={handleInputChange}
                             />
                         </div>
+
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="user_email" className="px-1">Email User</Label>
-                            <Input
-                                type="email"
-                                name="user_email"
-                                id="user_email"
-                                placeholder="Email User"
-                                value={form.user_email || ''}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="password_email" className="px-1">Password Email Proyek</Label>
-                            <Input
-                                type="text"
-                                name="password_email"
-                                id="password_email"
-                                placeholder="Password Email Proyek"
-                                value={form.password_email || ''}
-                                onChange={handleInputChange}
-                                required
-                            />
+                            <Label htmlFor="price" className="px-1">Harga Proyek</Label>
+                            <div className="relative flex items-center">
+                                <span className="absolute left-3 text-muted-foreground text-sm">Rp</span>
+                                <Input
+                                    type="text"
+                                    name="price"
+                                    id="price"
+                                    placeholder="Harga Proyek"
+                                    value={form.price > 0 ? formatIDR(form.price) : ''}
+                                    onChange={e => {
+                                        const raw = e.target.value.replace(/\./g, '');
+                                        const num = Number(raw);
+                                        handleInputChange({
+                                            ...e,
+                                            target: { ...e.target, name: 'price', value: num.toString(), type: 'number' }
+                                        });
+                                    }}
+                                    min={0}
+                                    required
+                                    className="pl-10"
+                                />
+                            </div>
                         </div>
                     </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className="font-medium">Accounts</label>
+                        {form.accounts && form.accounts.length > 0 && form.accounts.map((account, idx) => (
+                            <div key={idx} className="flex gap-2 mb-1 items-end">
+                                <Input
+                                    type="text"
+                                    placeholder="Label Account"
+                                    value={account.label || ''}
+                                    onChange={e => updateAccount(idx, 'label', e.target.value)}
+                                    className="w-1/3"
+                                />
+                                <Input
+                                    type="email"
+                                    placeholder="Email"
+                                    value={account.email || ''}
+                                    onChange={e => updateAccount(idx, 'email', e.target.value)}
+                                    className="w-1/3"
+                                />
+                                <Input
+                                    type="text"
+                                    placeholder="Password"
+                                    value={account.password || ''}
+                                    onChange={e => updateAccount(idx, 'password', e.target.value)}
+                                    className="w-1/3"
+                                />
+
+                                <Button
+                                    type="button"
+                                    variant="destructive" size="sm"
+                                    onClick={() => removeAccount(idx)}
+                                    className="px-2"
+                                >
+                                    Hapus
+                                </Button>
+                            </div>
+                        ))}
+                        <Button
+                            type="button"
+                            onClick={addAccount}
+                            className="w-full"
+                        >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Account
+                        </Button>
+                    </div>
+
                     <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
                         {/* Progres Combobox */}
                         <Combobox
@@ -479,32 +534,7 @@ export default function ModalForm({
                             required
                         />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="price" className="px-1">Harga Proyek</Label>
-                            <div className="relative flex items-center">
-                                <span className="absolute left-3 text-muted-foreground text-sm">Rp</span>
-                                <Input
-                                    type="text"
-                                    name="price"
-                                    id="price"
-                                    placeholder="Harga Proyek"
-                                    value={form.price > 0 ? formatIDR(form.price) : ''}
-                                    onChange={e => {
-                                        const raw = e.target.value.replace(/\./g, '');
-                                        const num = Number(raw);
-                                        handleInputChange({
-                                            ...e,
-                                            target: { ...e.target, name: 'price', value: num.toString(), type: 'number' }
-                                        });
-                                    }}
-                                    min={0}
-                                    required
-                                    className="pl-10"
-                                />
-                            </div>
-                        </div>
-                    </div>
+
                     <div className="flex flex-col gap-2">
                         <label className="font-medium">Deposit</label>
                         {(form.deposit && form.deposit.length > 0 ? form.deposit : [{ label: '', price: 0, percent: 0 }]).map((d, idx) => (
@@ -554,9 +584,10 @@ export default function ModalForm({
                             Tambah Deposit
                         </Button>
                     </div>
+
                     <div className="flex flex-col gap-2">
                         <label className="font-medium">Link</label>
-                        {(form.link && form.link.length > 0 ? form.link : [{ label: '', url: '' }]).map((l: { label: string; url: string }, idx: number) => (
+                        {form.link && form.link.length > 0 && form.link.map((l: { label: string; url: string }, idx: number) => (
                             <div key={idx} className="flex gap-2 mb-1">
                                 <Input
                                     type="text"

@@ -1,6 +1,5 @@
 import {
   LayoutDashboard,
-  BriefcaseBusiness,
   FileText,
   CalendarDays,
   Search,
@@ -55,11 +54,6 @@ export const sidebarNavItems: SidebarNavItem[] = [
     title: "Pencarian & Filter",
     href: "/dashboard/filter",
     icon: Search,
-  },
-  {
-    title: "Statistik",
-    href: "/dashboard/statistik",
-    icon: BriefcaseBusiness,
   },
 ];
 

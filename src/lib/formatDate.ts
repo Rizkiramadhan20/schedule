@@ -7,5 +7,5 @@ export function FormatIndoDate(
   if (!date) return "";
   const d = typeof date === "object" && "toDate" in date ? date.toDate() : date;
   if (!(d instanceof Date) || isNaN(d.getTime())) return "";
-  return format(d, "d MMMM yyyy HH:mm", { locale: id });
+  return format(d, "d MMMM yyyy", { locale: id });
 }
