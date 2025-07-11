@@ -43,6 +43,8 @@ import { EmptyDataSVG } from "@/base/helper/Empety"
 
 import { StatusIcon, ProgressIcon } from "@/base/helper/ProgresStatus"
 
+import ProyekSkelaton from './ProyekSkelaton'
+
 import {
     Pagination,
     PaginationContent,
@@ -55,7 +57,7 @@ import {
 
 export default function ProyekLayout() {
     const {
-        open, setOpen, loading, form,
+        open, setOpen, loading, initialLoading, form,
         handleInputChange, handleImageChange, addProyek, editProyek,
         categories, frameworks, loadingCategories, loadingFrameworks,
         addLink, updateLink, removeLink,
@@ -237,8 +239,10 @@ export default function ProyekLayout() {
                 </div>
             </div>
 
-            {/* Tampilkan pemberitahuan jika data kosong */}
-            {filteredProyeks.length === 0 ? (
+            {/* Show skeleton when loading */}
+            {initialLoading || loading || loadingCategories || loadingFrameworks ? (
+                <ProyekSkelaton />
+            ) : filteredProyeks.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16">
                     <EmptyDataSVG />
                     <p className="text-lg text-muted-foreground">
@@ -339,7 +343,7 @@ export default function ProyekLayout() {
                     </div>
 
                     {/* Pagination */}
-                    <div className='flex flex-col md:flex-row justify-between items-center mt-8'>
+                    <div className='flex flex-col md:flex-row justify-between items-center mt-8 gap-4'>
                         <div className="text-sm text-muted-foreground">
                             {filteredProyeks.length} project{filteredProyeks.length !== 1 ? 's' : ''} found
                             {totalPages > 1 && (

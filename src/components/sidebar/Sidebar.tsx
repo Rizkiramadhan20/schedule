@@ -16,6 +16,8 @@ import { useSidebarCollapsed } from "./SidebarCollapsedContext"
 
 import { sidebarNavItems, generalNavItems } from "@/components/sidebar/data/dashboard"
 
+import { DigitalClock } from "@/components/ui/digital-clock"
+
 import {
     X,
     ChevronDown,
@@ -262,28 +264,12 @@ export default function Sidebar() {
                         </div>
                     </div>
                 </div>
-                {/* Profile section moved to bottom */}
+                {/* Digital Clock section moved to bottom */}
                 <div className={cn(
                     "flex items-center border-t border-border/40 pt-6 mt-6",
                     collapsed ? "justify-center" : "justify-start"
                 )}>
-                    <Link
-                        href="/"
-                        className={cn(
-                            "flex items-center gap-2 font-semibold hover:opacity-80 transition-opacity",
-                            collapsed ? "justify-center w-full px-0" : "justify-start w-full px-0"
-                        )}
-                    >
-                        <div className="h-6 w-6 bg-primary rounded-md" />
-                        {!collapsed && (
-                            <span className={cn(
-                                "text-xl whitespace-nowrap transition-all duration-300",
-                                "w-auto opacity-100 block"
-                            )}>
-                                Rizki Ramadhan
-                            </span>
-                        )}
-                    </Link>
+                    <DigitalClock collapsed={collapsed} />
                 </div>
             </div>
             {/* Overlay for mobile */}

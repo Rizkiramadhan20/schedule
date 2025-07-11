@@ -111,7 +111,7 @@ export default function Header() {
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="relative h-9 w-auto rounded-full flex items-center gap-2 px-2 hover:bg-muted/50">
                                     <Avatar className="h-8 w-8">
-                                        <AvatarImage src="/avatars/01.png" alt="@user" />
+                                        <AvatarImage src={user?.photo_url} alt={fullName} />
                                         <AvatarFallback>{fullName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                                     </Avatar>
                                     <div className="flex-col items-start hidden md:flex">

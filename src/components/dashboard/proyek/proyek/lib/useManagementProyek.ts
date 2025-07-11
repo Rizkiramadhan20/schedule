@@ -42,6 +42,7 @@ export default function useManagementProyek() {
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true);
     const [proyeks, setProyeks] = useState<Proyek[]>([]);
     const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -102,6 +103,7 @@ export default function useManagementProyek() {
                     ...doc.data(),
                 })) as Proyek[]
             );
+            setInitialLoading(false);
         });
         return () => unsub();
     }, []);
@@ -383,6 +385,7 @@ export default function useManagementProyek() {
         proyeks,
         filteredProyeks,
         loading,
+        initialLoading,
         open,
         setOpen,
         form,
